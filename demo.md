@@ -1,8 +1,8 @@
-# MD Editor Plus
+# Notion WYSIWYG Markdown Editor
 
 A Notion-style markdown block editor for VS Code. **Every feature below is live in this file** — open the block view to feel it, switch to **Code** view to see how it round-trips to plain Markdown.
 
-![MD Editor Plus rendering a Markdown file with the bubble menu open](media/MD-editor-plus.png)\---
+\---
 
 ## Headings
 
@@ -44,7 +44,7 @@ Keyboard shortcuts that work right now:
 
 ### Task list
 
-- [x] Install MD Editor Plus
+- [x] Install the extension
 
 - [x] Open a Markdown file
 
@@ -147,18 +147,18 @@ def search(notes: Iterable[Note], query: str) -> list[Note]:
 npm install
 npm run compile
 npm run package
-code --install-extension md-editor-plus-0.1.0.vsix
+code --install-extension notion-markdown-editor-0.0.1.vsix
 ```
 
 ### JSON
 
 ```json
 {
-  "mdEditorPlus.theme": "claude",
-  "mdEditorPlus.font": "serif",
-  "mdEditorPlus.pageWidth": 1000,
-  "mdEditorPlus.alwaysDarkCode": true,
-  "mdEditorPlus.shortenCodeSnippets": true
+  "notionMdEditor.theme": "claude",
+  "notionMdEditor.font": "serif",
+  "notionMdEditor.pageWidth": 1000,
+  "notionMdEditor.alwaysDarkCode": true,
+  "notionMdEditor.shortenCodeSnippets": true
 }
 ```
 
@@ -213,9 +213,7 @@ a:hover { border-bottom-color: currentColor; }
 
 Local image (extension icon, from `media/`):
 
-![MD Editor Plus icon](media/icon.png)Vector logo (SVG):
-
-![Logo SVG](media/icon.svg)A reference-style image works too:
+![Extension icon](media/icon.png)A reference-style image works too:
 
 ![Claude icon](media/claude-icon.svg "Claude theme icon")&gt; \[!NOTE\] 💡
 
@@ -227,8 +225,8 @@ Local image (extension icon, from `media/`):
 
 - Bare autolink: <https://code.visualstudio.com>
 - Inline link: [VS Code Marketplace](https://marketplace.visualstudio.com)
-- Reference link: [GitHub repo](https://github.com/aviranrevach/md-editor-plus)
-- Email: [aviran@atera.com](mailto:aviran@atera.com)
+- Reference link: [GitHub repo](https://github.com/2JIHAN/notion-markdown-editor-vscode-extension)
+- Email: [you@example.com](mailto:you@example.com)
 - Anchor link to a heading on this page: [jump to Tables](#tables)
 
 ---
@@ -273,7 +271,7 @@ The line below is a horizontal rule.
 
 ## Special characters & escapes
 
-Backticks in prose: `` `foo` `` renders as `` `foo` ``. An escaped asterisk \*not italic\* stays literal. HTML entities like `&amp;` and `&copy;` work inline: 2026 © Aviran Revach.
+Backticks in prose: `` `foo` `` renders as `` `foo` ``. An escaped asterisk \*not italic\* stays literal. HTML entities like `&amp;` and `&copy;` work inline: 2026 © JIHAN.
 
 ---
 
@@ -283,4 +281,4 @@ Inline math isn't a built-in block, but you can write expressions as inline code
 
 ---
 
-*Made for developers who want their notes to look as good as their code.*[Made with MD Editor Plus](https://github.com/aviranrevach/md-editor-plus) · [Report a bug](https://github.com/aviranrevach/md-editor-plus/issues)
+*Made for developers who want their notes to look as good as their code.*[Made with Notion WYSIWYG Markdown Editor](https://github.com/2JIHAN/notion-markdown-editor-vscode-extension) · [Report a bug](https://github.com/2JIHAN/notion-markdown-editor-vscode-extension/issues)

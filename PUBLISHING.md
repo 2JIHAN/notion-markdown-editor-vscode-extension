@@ -1,4 +1,4 @@
-# Publishing MD Editor Plus
+# Publishing Notion WYSIWYG Markdown Editor
 
 This extension ships to two marketplaces:
 
@@ -13,10 +13,10 @@ Both publish from the same codebase via npm scripts already in `package.json`.
 
 You need two accounts and two tokens. Each takes ~5 minutes.
 
-### 1. Visual Studio Marketplace (publisher: `AviranRevach`)
+### 1. Visual Studio Marketplace (publisher: `jihan`)
 
 1. Open https://marketplace.visualstudio.com/manage and sign in with a Microsoft account.
-2. Create a new publisher with the **ID** `AviranRevach` (must match `package.json`).
+2. Create a new publisher with the **ID** `jihan` (must match `package.json`).
 3. Generate a Personal Access Token (PAT):
    - Open https://dev.azure.com → User Settings → **Personal Access Tokens**.
    - **Organization:** All accessible organizations.
@@ -25,7 +25,7 @@ You need two accounts and two tokens. Each takes ~5 minutes.
 4. Copy the token — you only see it once.
 5. Authenticate `vsce` once:
    ```sh
-   npx vsce login AviranRevach
+   npx vsce login jihan
    ```
    Paste the PAT when prompted. Stored locally; you don't need to re-login until it expires.
 
@@ -57,22 +57,24 @@ You need two accounts and two tokens. Each takes ~5 minutes.
    ```sh
    npm run package
    ```
-   Inspect the file list it prints. The bundle should be ~630 KB and contain:
-   - `dist/extension.js`, `dist/mdEditorPlusProvider.js`, `dist/webview.js`
-   - `media/icon.png`, `media/MD-editor-plus.png`
+   Inspect the file list it prints. The bundle should contain:
+   - `dist/extension.js`, `dist/notionMarkdownEditorProvider.js`, `dist/webview.js`
+   - `media/icon.png` and the feature screenshots
    - `package.json`, `README.md`, `CHANGELOG.md`, `LICENSE.txt`
+
+   It must **not** contain `.omc/`, `src/`, `tests/`, sourcemaps, or demo files — those are excluded by `.vscodeignore`.
 
 4. **Publish to VS Code Marketplace:**
    ```sh
    npm run publish:vscode
    ```
-   Listing appears at: https://marketplace.visualstudio.com/items?itemName=AviranRevach.md-editor-plus
+   Listing appears at: https://marketplace.visualstudio.com/items?itemName=jihan.notion-markdown-editor
 
 5. **Publish to Open VSX:**
    ```sh
    npm run publish:openvsx
    ```
-   Listing appears at: https://open-vsx.org/extension/AviranRevach/md-editor-plus
+   Listing appears at: https://open-vsx.org/extension/jihan/notion-markdown-editor
 
 6. **Push git tags:**
    ```sh
@@ -81,10 +83,23 @@ You need two accounts and two tokens. Each takes ~5 minutes.
 
 ---
 
+## Manual upload (no PAT)
+
+If you'd rather not set up a PAT, upload the `.vsix` by hand:
+
+1. `npm run package` to build `notion-markdown-editor-<version>.vsix`.
+2. Open https://marketplace.visualstudio.com/manage/publishers/jihan.
+3. **New extension → Visual Studio Code**, select the `.vsix`, **Upload**.
+
+The display name (`displayName` in `package.json`) must be globally unique across the Marketplace, or the upload is rejected with "This extension display name is taken."
+
+---
+
 ## Troubleshooting
 
 - **`vsce publish` fails with 401** — your PAT expired or doesn't have Marketplace (Manage) scope. Generate a new one.
 - **`ovsx publish` fails with 403** — make sure you accepted the Open VSX publisher agreement and that `OVSX_PAT` is set.
+- **"display name is taken"** — change `displayName` in `package.json` to something unique, then rebuild the `.vsix`.
 - **Bundle is huge** — re-check `.vscodeignore`. Sourcemaps must be excluded by `**/*.map` (single `*.map` only matches root-level files).
 - **Stale files in `dist/`** — delete `dist/` and re-run `npm run compile` if you renamed source files.
 
@@ -94,7 +109,7 @@ You need two accounts and two tokens. Each takes ~5 minutes.
 
 ```sh
 # First-time only
-npx vsce login AviranRevach
+npx vsce login jihan
 export OVSX_PAT=<token>
 
 # Every release

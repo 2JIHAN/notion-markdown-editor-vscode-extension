@@ -4,8 +4,6 @@
 
 Open any Markdown file and it renders as polished, block-based content. Click anywhere to edit, drag blocks to reorder, slash to insert. Your file stays plain Markdown on disk — written in **Notion-flavored Markdown** (`<callout icon color>`, …) so it round-trips with the Notion API for sync.
 
-![Notion Markdown Editor](media/MD-editor-plus.png)
-
 > **What this is.** A fork of [md-editor-plus](https://github.com/aviranrevach/md-editor-plus) (MIT, by Aviran Revach) re-pointed at a Notion-sync workflow. The block editor is upstream's; the callout dialect and the planned Notion sync are this fork's focus. See [docs/adr/0001](docs/adr/0001-notion-flavored-callout.md) for why callouts use `<callout>` instead of GFM `> [!NOTE]`.
 
 > **Status — early.** The block editor works; callout `<callout>` round-trip needs runtime QA; Notion sync is not built yet. **What's left is listed in [docs/BACKLOG.md](docs/BACKLOG.md).**

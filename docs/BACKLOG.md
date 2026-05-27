@@ -9,9 +9,8 @@ fork(md-editor-plus) 이후 이 프로젝트의 남은 작업. 우선순위 순.
 - **방법**: VSCode 에서 F5(또는 Cmd+R 리로드, **확장 호스트 kill 금지**)로 `.md` 열기 → callout 삽입/색·이모지 변경/중첩 블록 → 저장 → 디스크 markdown 확인. 기존 `<callout>` 파일 열어 라운드트립도 확인.
 - **확인 포인트**: 색/이모지 보존, 중첩 블록·리스트·코드블록(빈 줄 포함) 보존, 닫는 태그 앞 여분 빈 줄이 재파스에서 안정적인지.
 
-## 2. 프로젝트 레벨 문서  — README 가 아직 upstream
+## 2. 프로젝트 레벨 문서
 
-- **README.md** 100% upstream("MD Editor Plus"). 제목·브랜딩 교체, Notion-flavored callout + Notion sync 방향 반영, upstream(MIT) attribution 유지.
 - **docs/structure.md** 신규 — 폴더 트리, extension host vs webview 분리, callout 파스/직렬화 경로, 빌드(tsc + esbuild, punycode shim) 설명.
 
 ## 3. Notion sync  — 그린필드 (별도 설계 필요)

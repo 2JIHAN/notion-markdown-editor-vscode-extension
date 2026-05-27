@@ -169,7 +169,7 @@ This is a long English paragraph that should test line wrapping in LTR direction
 ```yaml
 ---
 title: בדיקת RTL
-author: Aviran
+author: JIHAN
 tags: [rtl, hebrew, bidi]
 ---
 ```

@@ -3,6 +3,10 @@
 .git/**
 .github/**
 .superpowers/**
+.omc
+**/.omc/**
+.codeboarding
+**/.codeboarding/**
 .DS_Store
 src/**
 tests/**
@@ -20,7 +24,6 @@ demo.md
 demo-rtl.md
 demo-tester.md
 PUBLISHING.md
-media/icon.svg
 media/header.svg
 media/claude-icon.svg
 media/demo.*
