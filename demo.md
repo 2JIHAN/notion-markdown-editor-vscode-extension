@@ -147,7 +147,7 @@ def search(notes: Iterable[Note], query: str) -> list[Note]:
 npm install
 npm run compile
 npm run package
-code --install-extension notion-markdown-editor-0.0.1.vsix
+code --install-extension notion-wysiwyg-md-0.0.1.vsix
 ```
 
 ### JSON

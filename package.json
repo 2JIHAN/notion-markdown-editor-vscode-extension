@@ -1,5 +1,5 @@
 {
-  "name": "notion-markdown-editor",
+  "name": "notion-wysiwyg-md",
   "displayName": "Notion WYSIWYG Markdown Editor",
   "description": "Notion-style block editor for Markdown with Notion-flavored callouts and local Notion sync. Edit .md files inline with rich blocks, drag-to-reorder, slash commands, and polished light/dark themes.",
   "version": "0.0.1",

@@ -68,13 +68,13 @@ You need two accounts and two tokens. Each takes ~5 minutes.
    ```sh
    npm run publish:vscode
    ```
-   Listing appears at: https://marketplace.visualstudio.com/items?itemName=jihan.notion-markdown-editor
+   Listing appears at: https://marketplace.visualstudio.com/items?itemName=jihan.notion-wysiwyg-md
 
 5. **Publish to Open VSX:**
    ```sh
    npm run publish:openvsx
    ```
-   Listing appears at: https://open-vsx.org/extension/jihan/notion-markdown-editor
+   Listing appears at: https://open-vsx.org/extension/jihan/notion-wysiwyg-md
 
 6. **Push git tags:**
    ```sh
@@ -87,7 +87,7 @@ You need two accounts and two tokens. Each takes ~5 minutes.
 
 If you'd rather not set up a PAT, upload the `.vsix` by hand:
 
-1. `npm run package` to build `notion-markdown-editor-<version>.vsix`.
+1. `npm run package` to build `notion-wysiwyg-md-<version>.vsix`.
 2. Open https://marketplace.visualstudio.com/manage/publishers/jihan.
 3. **New extension → Visual Studio Code**, select the `.vsix`, **Upload**.
 
