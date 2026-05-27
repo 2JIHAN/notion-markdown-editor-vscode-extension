@@ -87,12 +87,33 @@ MDX content is rendered as Markdown; embedded JSX falls into raw paragraphs (or 
 
 ## Getting started
 
-Not on the Marketplace yet — run it from source:
+Not on the Marketplace yet — run it from source.
+
+From the GitHub page, copy the clone URL under the green **Code** button, then on your machine:
 
 ```bash
-npm install
+git clone https://github.com/2JIHAN/notion-markdown-editor-vscode-extension.git
+cd notion-markdown-editor-vscode-extension
+npm install            # node_modules/ is gitignored, so install every fresh clone
 npm run compile        # tsc + esbuild (bundles the webview)
-# then press F5 in VS Code to launch an Extension Development Host
+code .                 # open the repo in VS Code, then press F5
+```
+
+`F5` launches an Extension Development Host with the extension loaded.
+
+While developing:
+
+```bash
+npm run watch          # rebuild on save (tsc -w + esbuild --watch)
+npm test               # run the Jest suite
+```
+
+When you're done, commit and push so the next machine picks it up:
+
+```bash
+git add -A
+git commit -m "…"
+git push origin main
 ```
 
 Then:
