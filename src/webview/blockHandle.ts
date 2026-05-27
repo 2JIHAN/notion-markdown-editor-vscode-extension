@@ -45,7 +45,7 @@ function getBlockAtHandle(editor: Editor, handleEl: HTMLElement): BlockUnderHand
       blockEnd: blockPos + node.nodeSize,
     };
   } catch (err) {
-    console.error('[md-editor-plus] getBlockAtHandle failed', err);
+    console.error('[notion-md-editor] getBlockAtHandle failed', err);
     return null;
   }
 }
@@ -75,7 +75,7 @@ export function createBlockHandle(editor: Editor): void {
   try {
     createCalloutMenu(editor);
   } catch (err) {
-    console.error('[md-editor-plus] callout menu init failed', err);
+    console.error('[notion-md-editor] callout menu init failed', err);
   }
   const tooltip = document.createElement('div');
   tooltip.className = 'block-handle-tooltip';

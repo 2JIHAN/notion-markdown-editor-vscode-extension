@@ -1,4 +1,5 @@
 import { Editor } from '@tiptap/core';
+import { CALLOUT_PRESETS } from './extensions/callout';
 
 export interface BlockDef {
   id: string;
@@ -66,6 +67,35 @@ function convertToList(
     return true;
   }).run();
 }
+
+// Convert a block into a callout. Callout content is block+, so the block's
+// inline content is wrapped in a paragraph inside the callout rather than
+// becoming a direct child.
+function convertToCallout(
+  editor: Editor,
+  blockPos: number,
+  attrs: { emoji: string; color: string },
+): void {
+  editor.chain().focus().command(({ tr, state, dispatch }) => {
+    const node = tr.doc.nodeAt(blockPos);
+    if (!node) return false;
+    const calloutType = state.schema.nodes.callout;
+    const paraType = state.schema.nodes.paragraph;
+    if (!calloutType || !paraType) return false;
+    const paraNode = paraType.create(null, node.content);
+    const calloutNode = calloutType.create(attrs, paraNode);
+    if (dispatch) tr.replaceWith(blockPos, blockPos + node.nodeSize, calloutNode);
+    return true;
+  }).run();
+}
+
+const CALLOUT_DESCRIPTIONS: Record<string, string> = {
+  note: 'Informational',
+  tip: 'Helpful suggestion',
+  important: 'Crucial context',
+  warning: 'Heads-up — possible footgun',
+  caution: 'Dangerous — irreversible',
+};
 
 const ICO = {
   paragraph: `<svg width="20" height="20" viewBox="0 0 256 256" fill="currentColor"><path d="M208,36H96a68,68,0,0,0,0,136h36v36a12,12,0,0,0,24,0V60h16V208a12,12,0,0,0,24,0V60h12a12,12,0,0,0,0-24ZM132,148H96a44,44,0,0,1,0-88h36Z"/></svg>`,
@@ -193,53 +223,20 @@ export const BLOCK_DEFS: BlockDef[] = [
     section: 'media',
     aliases: ['note', 'tip', 'important', 'warning', 'caution'],
     isActive: (t) => t === 'callout',
-    subItems: [
-      { id: 'callout-note',      label: 'Note',      description: 'Informational',
-        iconHtml: '<span class="block-picker-emoji-icon" data-callout-preview="note">💡</span>',
-        section: 'media',
-        isActive: (t, a) => t === 'callout' && a.type === 'note',
-        insert: (editor, pos) => editor.chain().focus().insertContentAt(pos, {
-          type: 'callout', attrs: { type: 'note', emoji: '💡' },
-          content: [{ type: 'text', text: ' ' }],
-        }).run(),
-        convert: (editor, blockPos) => replaceBlockWith(editor, blockPos, 'callout', { type: 'note', emoji: '💡' }) },
-      { id: 'callout-tip',       label: 'Tip',       description: 'Helpful suggestion',
-        iconHtml: '<span class="block-picker-emoji-icon" data-callout-preview="tip">✅</span>',
-        section: 'media',
-        isActive: (t, a) => t === 'callout' && a.type === 'tip',
-        insert: (editor, pos) => editor.chain().focus().insertContentAt(pos, {
-          type: 'callout', attrs: { type: 'tip', emoji: '✅' },
-          content: [{ type: 'text', text: ' ' }],
-        }).run(),
-        convert: (editor, blockPos) => replaceBlockWith(editor, blockPos, 'callout', { type: 'tip', emoji: '✅' }) },
-      { id: 'callout-important', label: 'Important', description: 'Crucial context',
-        iconHtml: '<span class="block-picker-emoji-icon" data-callout-preview="important">📌</span>',
-        section: 'media',
-        isActive: (t, a) => t === 'callout' && a.type === 'important',
-        insert: (editor, pos) => editor.chain().focus().insertContentAt(pos, {
-          type: 'callout', attrs: { type: 'important', emoji: '📌' },
-          content: [{ type: 'text', text: ' ' }],
-        }).run(),
-        convert: (editor, blockPos) => replaceBlockWith(editor, blockPos, 'callout', { type: 'important', emoji: '📌' }) },
-      { id: 'callout-warning',   label: 'Warning',   description: 'Heads-up — possible footgun',
-        iconHtml: '<span class="block-picker-emoji-icon" data-callout-preview="warning">⚠️</span>',
-        section: 'media',
-        isActive: (t, a) => t === 'callout' && a.type === 'warning',
-        insert: (editor, pos) => editor.chain().focus().insertContentAt(pos, {
-          type: 'callout', attrs: { type: 'warning', emoji: '⚠️' },
-          content: [{ type: 'text', text: ' ' }],
-        }).run(),
-        convert: (editor, blockPos) => replaceBlockWith(editor, blockPos, 'callout', { type: 'warning', emoji: '⚠️' }) },
-      { id: 'callout-caution',   label: 'Caution',   description: 'Dangerous — irreversible',
-        iconHtml: '<span class="block-picker-emoji-icon" data-callout-preview="caution">🛑</span>',
-        section: 'media',
-        isActive: (t, a) => t === 'callout' && a.type === 'caution',
-        insert: (editor, pos) => editor.chain().focus().insertContentAt(pos, {
-          type: 'callout', attrs: { type: 'caution', emoji: '🛑' },
-          content: [{ type: 'text', text: ' ' }],
-        }).run(),
-        convert: (editor, blockPos) => replaceBlockWith(editor, blockPos, 'callout', { type: 'caution', emoji: '🛑' }) },
-    ],
+    subItems: CALLOUT_PRESETS.map((p): BlockDef => ({
+      id: `callout-${p.id}`,
+      label: p.label,
+      description: CALLOUT_DESCRIPTIONS[p.id] ?? '',
+      iconHtml: `<span class="block-picker-emoji-icon" data-callout-preview="${p.color}">${p.emoji}</span>`,
+      section: 'media',
+      isActive: (t, a) => t === 'callout' && a.emoji === p.emoji && a.color === p.color,
+      insert: (editor, pos) => editor.chain().focus().insertContentAt(pos, {
+        type: 'callout',
+        attrs: { emoji: p.emoji, color: p.color },
+        content: [{ type: 'paragraph' }],
+      }).run(),
+      convert: (editor, blockPos) => convertToCallout(editor, blockPos, { emoji: p.emoji, color: p.color }),
+    })),
   },
   {
     id: 'toggle',

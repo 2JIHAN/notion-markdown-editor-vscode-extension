@@ -1,14 +1,20 @@
-# MD Editor Plus
+# Notion Markdown Editor
 
-**Notion-style markdown block editor / viewer for Visual Studio Code, Cursor etc.**
+**Notion-style markdown block editor for VS Code, with Notion-flavored callouts and local Notion sync.**
 
-Open any Markdown file and it renders as polished, block-based content. Click anywhere to edit, drag blocks to reorder, slash to insert. Your file stays plain Markdown on disk, so it works with every other tool in your pipeline.
+Open any Markdown file and it renders as polished, block-based content. Click anywhere to edit, drag blocks to reorder, slash to insert. Your file stays plain Markdown on disk — written in **Notion-flavored Markdown** (`<callout icon color>`, …) so it round-trips with the Notion API for sync.
 
-![MD Editor Plus](media/MD-editor-plus.png)\---
+![Notion Markdown Editor](media/MD-editor-plus.png)
+
+> **What this is.** A fork of [md-editor-plus](https://github.com/aviranrevach/md-editor-plus) (MIT, by Aviran Revach) re-pointed at a Notion-sync workflow. The block editor is upstream's; the callout dialect and the planned Notion sync are this fork's focus. See [docs/adr/0001](docs/adr/0001-notion-flavored-callout.md) for why callouts use `<callout>` instead of GFM `> [!NOTE]`.
+
+> **Status — early.** The block editor works; callout `<callout>` round-trip needs runtime QA; Notion sync is not built yet. **What's left is listed in [docs/BACKLOG.md](docs/BACKLOG.md).**
+
+---
 
 ## Why use it
 
-VS Code's built-in preview is great for reading. The default text editor is great for editing. **MD Editor Plus is what you want when you actually want to write**: the way you write in Notion or Linear, not the way you write a config file.
+VS Code's built-in preview is great for reading. The default text editor is great for editing. **Notion Markdown Editor is what you want when you actually want to write**: the way you write in Notion or Linear, not the way you write a config file.
 
 - **Blocks behave like blocks**: drag, click, slash to insert
 - **Real headings, real lists, real tables**, no `## Heading 2` clutter
@@ -33,7 +39,7 @@ VS Code's built-in preview is great for reading. The default text editor is grea
 - **Lists** — bullet, numbered, task lists with real checkboxes that round-trip to `- [ ]` / `- [x]`
 - **Tables** — GFM pipe syntax, inline cell editing, add rows/columns from the bubble menu
 - **Code blocks** — syntax highlighting for \~50 languages, line-number gutter, drag lines to reorder, copy button, optional auto-collapse for long snippets
-- **Callouts** — GFM `> [!NOTE]`, `> [!WARNING]`, `> [!TIP]`, `> [!IMPORTANT]`, `> [!CAUTION]` with colored backgrounds and icons
+- **Callouts** — Notion-flavored `<callout icon="💡" color="blue_bg">`, any emoji + the 18 Notion colors, with nested block content (paragraphs, lists, code, even nested callouts)
 - **Toggles** — collapsible `<details>` sections
 - **Media & misc** — images, blockquotes, dividers
 
@@ -81,13 +87,22 @@ MDX content is rendered as Markdown; embedded JSX falls into raw paragraphs (or 
 
 ## Getting started
 
-1. Install **MD Editor Plus** from the Marketplace.
-2. Open any `.md` file. It appears in the block view by default.
-3. Press `⌘/` (`Ctrl+/` on Windows/Linux) anywhere to insert a new block.
-4. Hover any block to grab its drag handle (`⠿`) and reorder it.
-5. Need raw Markdown? Click the **Code** segment in the toolbar, or run **MD Editor Plus: Open Source View** from the Command Palette.
+Not on the Marketplace yet — run it from source:
 
-To switch a single file back to VS Code's default editor, run **MD Editor Plus: Open Source View** or use **Reopen Editor With…** from the editor's title bar.
+```bash
+npm install
+npm run compile        # tsc + esbuild (bundles the webview)
+# then press F5 in VS Code to launch an Extension Development Host
+```
+
+Then:
+
+1. Open any `.md` file in the dev host. It appears in the block view by default.
+2. Press `⌘/` (`Ctrl+/` on Windows/Linux) anywhere to insert a new block.
+4. Hover any block to grab its drag handle (`⠿`) and reorder it.
+5. Need raw Markdown? Click the **Code** segment in the toolbar, or run **Notion Markdown Editor: Open Source View** from the Command Palette.
+
+To switch a single file back to VS Code's default editor, run **Notion Markdown Editor: Open Source View** or use **Reopen Editor With…** from the editor's title bar.
 
 ---
 
@@ -220,11 +235,18 @@ Insert from the block picker, then edit cells inline. Add rows and columns from 
 
 ### Callouts
 
-GitHub-flavored `> [!NOTE]`, `> [!WARNING]`, `> [!TIP]`, etc. Render with a colored background and an emoji icon.
+Notion-flavored `<callout>` blocks. Pick a preset (Note, Tip, Important, Warning, Caution) from the slash menu, then click the emoji to open a popover with a custom-emoji field and the 18 Notion color swatches. Callouts hold **block content** — multiple paragraphs, lists, code, even nested callouts.
 
 ```markdown
-<div data-callout data-type="note" data-emoji="💡">Callout blocks render with color and icon.</div>
+<callout icon="⚠️" color="yellow_bg">
+Heads-up text with **inline** formatting.
+
+- and nested blocks
+- like this list
+</callout>
 ```
+
+The `icon` + `color` attributes and the color tokens (`yellow_bg`, `blue_bg`, … — 9 text hues + 9 `_bg` variants) are exactly the Notion API's enhanced-markdown form, so callouts map 1:1 to Notion callout blocks for sync.
 
 ### Toggles
 
@@ -280,39 +302,39 @@ Available via the Command Palette (`⌘⇧P` / `Ctrl+Shift+P`):
 
 | Command | Description |
 | --- | --- |
-| **MD Editor Plus: Open Block View** | Reopens the active file with the block editor |
-| **MD Editor Plus: Open Source View** | Reopens the active file with VS Code's default text editor |
+| **Notion Markdown Editor: Open Block View** | Reopens the active file with the block editor |
+| **Notion Markdown Editor: Open Source View** | Reopens the active file with VS Code's default text editor |
 
 ---
 
 ## Settings reference
 
-All settings live under `mdEditorPlus.*` in your User or Workspace settings. They're written by the **Save view as default** button, but you can edit them by hand if you prefer.
+All settings live under `notionMdEditor.*` in your User or Workspace settings. They're written by the **Save view as default** button, but you can edit them by hand if you prefer.
 
 | Setting | Type | Default | Description |
 | --- | --- | --- | --- |
-| `mdEditorPlus.theme` | `"auto"` | `"light"` | `"sepia"` |
-| `mdEditorPlus.font` | `"sans"` | `"serif"` | `"mono"` |
-| `mdEditorPlus.textSize` | `"s"` | `"m"` | `"l"` |
-| `mdEditorPlus.pageWidth` | `number` (400 to 2400) | `800` | Default page width in px |
-| `mdEditorPlus.fullWidth` | `boolean` | `false` | Open in full-window-width by default |
-| `mdEditorPlus.alwaysDarkCode` | `boolean` | `false` | Force dark code blocks regardless of page theme |
-| `mdEditorPlus.alwaysDarkSource` | `boolean` | `false` | Force dark source view regardless of page theme |
-| `mdEditorPlus.sourceFullWidth` | `boolean` | `false` | Render source view at full width even when the page is narrow |
-| `mdEditorPlus.shortenCodeSnippets` | `boolean` | `false` | Collapse long code snippets behind a Show more button |
+| `notionMdEditor.theme` | `"auto"` | `"light"` | `"sepia"` |
+| `notionMdEditor.font` | `"sans"` | `"serif"` | `"mono"` |
+| `notionMdEditor.textSize` | `"s"` | `"m"` | `"l"` |
+| `notionMdEditor.pageWidth` | `number` (400 to 2400) | `800` | Default page width in px |
+| `notionMdEditor.fullWidth` | `boolean` | `false` | Open in full-window-width by default |
+| `notionMdEditor.alwaysDarkCode` | `boolean` | `false` | Force dark code blocks regardless of page theme |
+| `notionMdEditor.alwaysDarkSource` | `boolean` | `false` | Force dark source view regardless of page theme |
+| `notionMdEditor.sourceFullWidth` | `boolean` | `false` | Render source view at full width even when the page is narrow |
+| `notionMdEditor.shortenCodeSnippets` | `boolean` | `false` | Collapse long code snippets behind a Show more button |
 
 ---
 
 ## Markdown compatibility
 
-MD Editor Plus reads and writes **CommonMark** plus the GitHub-flavored extensions you'd expect:
+Notion Markdown Editor reads and writes **CommonMark** plus the GitHub-flavored extensions you'd expect:
 
 - Headings, paragraphs, blockquotes, lists (bulleted, ordered, task)
 - Tables (GFM pipe syntax)
 - Strikethrough, inline code, fenced code blocks with language
 - Links, autolinks, images
 - HTML passthrough (`<details>`, etc.)
-- GFM callouts: `> [!NOTE]`, `> [!WARNING]`, `> [!TIP]`, `> [!IMPORTANT]`, `> [!CAUTION]`
+- Notion-flavored callouts: `<callout icon="…" color="…">…</callout>` (18 Notion colors, nested blocks)
 - YAML / TOML frontmatter (preserved, not rendered)
 
 Open the bundled `demo.md` to see every supported block in one place.
@@ -361,6 +383,23 @@ Storage is plain Markdown — no special tokens, no frontmatter required. Direct
 ## Release notes
 
 See [CHANGELOG.md](CHANGELOG.md).
+
+---
+
+## Project docs
+
+| Doc | What's in it |
+| --- | --- |
+| [docs/BACKLOG.md](docs/BACKLOG.md) | **What to do next** — prioritized, glance-and-go |
+| [docs/structure.md](docs/structure.md) | Layout, host vs webview, build, callout parse/serialize path |
+| [docs/adr/](docs/adr/) | Architecture decisions (why `<callout>` over GFM, …) |
+| [docs/history/](docs/history/) | Dated work log |
+
+---
+
+## Credits
+
+Forked from [**md-editor-plus**](https://github.com/aviranrevach/md-editor-plus) by Aviran Revach (MIT). The block editor, themes, and webview UI are upstream's work; this fork adds the Notion-flavored callout dialect and (planned) local Notion sync.
 
 ---
 

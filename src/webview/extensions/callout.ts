@@ -1,98 +1,121 @@
 import { Node, mergeAttributes } from '@tiptap/core';
+import MarkdownIt from 'markdown-it';
 
-export type CalloutType = 'note' | 'tip' | 'important' | 'warning' | 'caution' | 'info';
+// Notion-flavored Markdown callout colors. The bare hue names are "text" colors
+// (colored text + subtle background); the `_bg` variants fill the background.
+// These match the Notion API's enhanced-markdown <callout> color attribute.
+export const NOTION_CALLOUT_COLORS = [
+  'default',
+  'gray', 'brown', 'orange', 'yellow', 'green', 'blue', 'purple', 'pink', 'red',
+  'gray_bg', 'brown_bg', 'orange_bg', 'yellow_bg', 'green_bg', 'blue_bg', 'purple_bg', 'pink_bg', 'red_bg',
+] as const;
+export type CalloutColor = (typeof NOTION_CALLOUT_COLORS)[number];
 
-const DEFAULT_EMOJIS: Record<CalloutType, string> = {
-  note: '💡',
-  tip: '✅',
-  important: '📌',
-  warning: '⚠️',
-  caution: '🛑',
-  info: 'ℹ️',
-};
+const DEFAULT_EMOJI = '💡';
+const DEFAULT_COLOR: CalloutColor = 'gray_bg';
 
-const CALLOUT_TYPES = 'NOTE|TIP|IMPORTANT|WARNING|CAUTION|INFO';
-const CALLOUT_LINE_RE = new RegExp(`^> \\[!(${CALLOUT_TYPES})\\]\\s*(.*)?$`, 'i');
-const BLOCK_LINE_RE = /^> ?(.*)$/;
+function normalizeColor(value: string | null): CalloutColor {
+  if (value && (NOTION_CALLOUT_COLORS as readonly string[]).includes(value)) {
+    return value as CalloutColor;
+  }
+  return DEFAULT_COLOR;
+}
 
-export interface CalloutAttrs {
-  type: CalloutType;
+export interface CalloutPreset {
+  id: string;
+  label: string;
   emoji: string;
+  color: CalloutColor;
 }
 
-export function parseCalloutLine(line: string): CalloutAttrs | null {
-  const match = line.match(CALLOUT_LINE_RE);
-  if (!match) return null;
-  const type = match[1].toLowerCase() as CalloutType;
-  const emoji = match[2]?.trim() || DEFAULT_EMOJIS[type];
-  return { type, emoji };
+// Quick-pick presets for the slash / callout menus. The persisted node stores
+// only emoji + color; presets are just convenient (emoji, color) pairs.
+export const CALLOUT_PRESETS: CalloutPreset[] = [
+  { id: 'note', label: 'Note', emoji: '💡', color: 'blue_bg' },
+  { id: 'tip', label: 'Tip', emoji: '✅', color: 'green_bg' },
+  { id: 'important', label: 'Important', emoji: '📌', color: 'purple_bg' },
+  { id: 'warning', label: 'Warning', emoji: '⚠️', color: 'yellow_bg' },
+  { id: 'caution', label: 'Caution', emoji: '🛑', color: 'red_bg' },
+];
+
+const OPEN_RE = /^<callout\b([^>]*)>\s*$/i;
+const CLOSE_RE = /^<\/callout>\s*$/i;
+const ATTR_RE = /(\w+)\s*=\s*"([^"]*)"/g;
+
+function escapeAttr(value: string): string {
+  return value.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
 }
 
-export function calloutToMarkdown(
-  type: CalloutType,
-  emoji: string,
-  content: string,
-): string {
-  const body = content
-    .split('\n')
-    .map((l) => `> ${l}`)
-    .join('\n');
-  return `> [!${type.toUpperCase()}] ${emoji}\n${body}\n`;
+// markdown-it instance used only to render a callout's inner markdown to block
+// HTML during preprocessing. html:true lets already-converted nested callout
+// <div>s pass through untouched.
+const inner = new MarkdownIt({ html: true, linkify: true, breaks: false });
+
+interface CalloutAttrs {
+  emoji: string;
+  color: CalloutColor;
 }
 
-// Convert inline markdown (bold/italic/code/strikethrough/links) to HTML so
-// ProseMirror's parser picks up the formatting when the callout div is parsed.
-function inlineMarkdownToHtml(src: string): string {
-  let out = src
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
-  out = out.replace(/`([^`]+)`/g, (_m, code: string) => `<code>${code}</code>`);
-  out = out.replace(
-    /\[([^\]]+)\]\(([^)\s]+)(?:\s+"[^"]*")?\)/g,
-    (_m, text: string, url: string) => `<a href="${url}">${text}</a>`,
-  );
-  out = out.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-  out = out.replace(/(?<!_)__([^_]+)__(?!_)/g, '<strong>$1</strong>');
-  out = out.replace(/(?<!\*)\*([^*\n]+)\*(?!\*)/g, '<em>$1</em>');
-  out = out.replace(/(?<!_)_([^_\n]+)_(?!_)/g, '<em>$1</em>');
-  out = out.replace(/~~([^~]+)~~/g, '<s>$1</s>');
-  return out;
+function readOpenAttrs(raw: string): CalloutAttrs {
+  let emoji = DEFAULT_EMOJI;
+  let color: CalloutColor = DEFAULT_COLOR;
+  ATTR_RE.lastIndex = 0;
+  let m: RegExpExecArray | null;
+  while ((m = ATTR_RE.exec(raw))) {
+    if (m[1] === 'icon') emoji = m[2] || DEFAULT_EMOJI;
+    else if (m[1] === 'color') color = normalizeColor(m[2]);
+  }
+  return { emoji, color };
 }
 
-// Pre-process raw markdown so GFM-style callouts (`> [!NOTE]\n> body…`) become
-// `<div data-callout data-type="…">…</div>` HTML blocks. tiptap-markdown's HTML
-// passthrough then hands them straight to the Callout node's parseHTML rule.
+/**
+ * Turn Notion-flavored `<callout icon="…" color="…">…</callout>` blocks into
+ * `<div data-callout …>…</div>` HTML so tiptap-markdown's HTML passthrough hands
+ * them to the Callout node's parseHTML rule.
+ *
+ * The inner markdown is rendered to block HTML (recursively, so nested callouts
+ * survive) and emitted on a single line with newlines encoded as `&#10;`. The
+ * single-line form stops CommonMark from terminating the HTML block at a blank
+ * line, while `&#10;` decodes back to real newlines inside <pre> when the DOM
+ * is parsed — preserving code blocks that contain blank lines.
+ */
 export function preprocessMarkdownCallouts(markdown: string): string {
   const lines = markdown.split('\n');
   const out: string[] = [];
   let i = 0;
   while (i < lines.length) {
-    const head = parseCalloutLine(lines[i]);
-    if (!head) {
+    const open = OPEN_RE.exec(lines[i]);
+    if (!open) {
       out.push(lines[i]);
       i++;
       continue;
     }
+    // Walk to the matching close, tracking nesting depth.
+    let depth = 1;
     const body: string[] = [];
     let j = i + 1;
-    while (j < lines.length) {
-      // Stop if this line begins a NEW callout — covers files where adjacent
-      // callouts weren't separated by a blank line (the markdown serializer
-      // didn't always emit one).
-      if (parseCalloutLine(lines[j])) break;
-      const m = lines[j].match(BLOCK_LINE_RE);
-      if (!m) break;
-      body.push(m[1]);
-      j++;
+    for (; j < lines.length; j++) {
+      if (OPEN_RE.test(lines[j])) depth++;
+      else if (CLOSE_RE.test(lines[j])) {
+        depth--;
+        if (depth === 0) break;
+      }
+      body.push(lines[j]);
     }
-    const html = inlineMarkdownToHtml(body.join(' ').trim());
+    if (depth !== 0) {
+      // Unbalanced — leave the line untouched and move on.
+      out.push(lines[i]);
+      i++;
+      continue;
+    }
+    const { emoji, color } = readOpenAttrs(open[1]);
+    const innerMarkdown = preprocessMarkdownCallouts(body.join('\n'));
+    const innerHtml = inner.render(innerMarkdown).trim().replace(/\n/g, '&#10;');
     out.push(
-      `<div data-callout data-type="${head.type}" data-emoji="${head.emoji}">${html}</div>`,
+      `<div data-callout data-emoji="${escapeAttr(emoji)}" data-color="${color}">${innerHtml}</div>`,
       '',
     );
-    i = j;
+    i = j + 1;
   }
   return out.join('\n');
 }
@@ -100,25 +123,20 @@ export function preprocessMarkdownCallouts(markdown: string): string {
 const Callout = Node.create({
   name: 'callout',
   group: 'block',
-  content: 'inline*',
+  content: 'block+',
+  defining: true,
 
   addAttributes() {
     return {
-      type: {
-        default: 'note' as CalloutType,
-        parseHTML: (element) =>
-          (element.getAttribute('data-type') as CalloutType | null) ?? 'note',
-        renderHTML: (attrs) => ({ 'data-type': attrs.type }),
-      },
       emoji: {
-        default: '💡',
-        parseHTML: (element) => {
-          const explicit = element.getAttribute('data-emoji');
-          if (explicit) return explicit;
-          const type = (element.getAttribute('data-type') as CalloutType) ?? 'note';
-          return DEFAULT_EMOJIS[type];
-        },
+        default: DEFAULT_EMOJI,
+        parseHTML: (element) => element.getAttribute('data-emoji') || DEFAULT_EMOJI,
         renderHTML: (attrs) => ({ 'data-emoji': attrs.emoji }),
+      },
+      color: {
+        default: DEFAULT_COLOR,
+        parseHTML: (element) => normalizeColor(element.getAttribute('data-color')),
+        renderHTML: (attrs) => ({ 'data-color': attrs.color }),
       },
     };
   },
@@ -130,10 +148,7 @@ const Callout = Node.create({
   renderHTML({ node, HTMLAttributes }) {
     return [
       'div',
-      mergeAttributes(
-        { 'data-callout': '', class: 'callout', dir: 'auto' },
-        HTMLAttributes,
-      ),
+      mergeAttributes({ 'data-callout': '', class: 'callout', dir: 'auto' }, HTMLAttributes),
       ['span', { class: 'callout-emoji', contenteditable: 'false' }, node.attrs.emoji as string],
       ['div', { class: 'callout-content', dir: 'auto' }, 0],
     ];
@@ -143,10 +158,13 @@ const Callout = Node.create({
     return {
       markdown: {
         serialize(state: any, node: any) {
-          const content = node.textContent as string;
-          state.write(calloutToMarkdown(node.attrs.type, node.attrs.emoji, content));
+          const emoji = (node.attrs.emoji as string) || DEFAULT_EMOJI;
+          const color = (node.attrs.color as string) || DEFAULT_COLOR;
+          state.write(`<callout icon="${emoji}" color="${color}">`);
           state.ensureNewLine();
-          state.write('\n');
+          state.renderContent(node);
+          state.write('</callout>');
+          state.closeBlock(node);
         },
       },
     };

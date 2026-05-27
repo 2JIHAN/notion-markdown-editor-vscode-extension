@@ -1,21 +1,19 @@
 import { Editor } from '@tiptap/core';
+import { CALLOUT_PRESETS, NOTION_CALLOUT_COLORS, CalloutColor } from './extensions/callout';
 
-interface CalloutTypeDef {
-  id: 'note' | 'tip' | 'important' | 'warning' | 'caution';
-  label: string;
-  emoji: string;
-}
+const DEFAULT_EMOJI = '💡';
 
-const TYPES: CalloutTypeDef[] = [
-  { id: 'note',      label: 'Note',      emoji: '💡' },
-  { id: 'tip',       label: 'Tip',       emoji: '✅' },
-  { id: 'important', label: 'Important', emoji: '📌' },
-  { id: 'warning',   label: 'Warning',   emoji: '⚠️' },
-  { id: 'caution',   label: 'Caution',   emoji: '🛑' },
-];
+// Colors offered in the swatch grid (skip the bare 'default' — the presets
+// cover the neutral case).
+const SWATCH_COLORS: CalloutColor[] = NOTION_CALLOUT_COLORS.filter((c) => c !== 'default');
 
-const DEFAULT_EMOJI_BY_TYPE: Record<CalloutTypeDef['id'], string> =
-  TYPES.reduce((acc, t) => ({ ...acc, [t.id]: t.emoji }), {} as Record<CalloutTypeDef['id'], string>);
+const COLOR_LABELS: Record<string, string> = {
+  gray: 'Gray', brown: 'Brown', orange: 'Orange', yellow: 'Yellow', green: 'Green',
+  blue: 'Blue', purple: 'Purple', pink: 'Pink', red: 'Red',
+  gray_bg: 'Gray background', brown_bg: 'Brown background', orange_bg: 'Orange background',
+  yellow_bg: 'Yellow background', green_bg: 'Green background', blue_bg: 'Blue background',
+  purple_bg: 'Purple background', pink_bg: 'Pink background', red_bg: 'Red background',
+};
 
 const EMOJI_GRID = [
   '😀','😂','😍','🥰','😎','🤔','😢','😡','🙏','👍',
@@ -24,7 +22,7 @@ const EMOJI_GRID = [
   '🌟','🌈','🌸','🍀','☀️','🌙','⏰','🎨','📊','🎁',
 ];
 
-type View = 'types' | 'emoji';
+type View = 'presets' | 'emoji';
 
 export interface CalloutMenu {
   open: (anchorEl: HTMLElement, calloutPos: number) => void;
@@ -38,7 +36,7 @@ export function createCalloutMenu(editor: Editor): CalloutMenu {
   el.className = 'callout-menu';
   document.body.appendChild(el);
 
-  function setAttrs(nextType: CalloutTypeDef['id'] | null, nextEmoji: string | null): void {
+  function setAttrs(nextEmoji: string | null, nextColor: CalloutColor | null): void {
     editor
       .chain()
       .focus()
@@ -48,8 +46,8 @@ export function createCalloutMenu(editor: Editor): CalloutMenu {
         if (dispatch) {
           tr.setNodeMarkup(pos, undefined, {
             ...node.attrs,
-            ...(nextType ? { type: nextType } : {}),
             ...(nextEmoji ? { emoji: nextEmoji } : {}),
+            ...(nextColor ? { color: nextColor } : {}),
           });
         }
         return true;
@@ -70,17 +68,26 @@ export function createCalloutMenu(editor: Editor): CalloutMenu {
     }
   }
 
-  function render(currentType: CalloutTypeDef['id'], currentEmoji: string): void {
+  function render(currentEmoji: string, currentColor: CalloutColor): void {
     el.innerHTML = `
-      <div class="callout-menu-view active" data-view="types">
-        <div class="callout-menu-header">Callout type</div>
+      <div class="callout-menu-view active" data-view="presets">
+        <div class="callout-menu-header">Style</div>
         <div class="callout-menu-list">
-          ${TYPES.map((t) => `
-            <button class="callout-menu-chip ${t.id === currentType ? 'active' : ''}" data-type="${t.id}" data-callout-preview="${t.id}">
-              <span class="callout-menu-chip-emoji">${t.id === currentType ? escapeHtml(currentEmoji) : t.emoji}</span>
-              <span class="callout-menu-chip-label">${t.label}</span>
-              ${t.id === currentType ? '<span class="callout-menu-chip-check">✓</span>' : ''}
-            </button>
+          ${CALLOUT_PRESETS.map((p) => {
+            const active = p.emoji === currentEmoji && p.color === currentColor;
+            return `
+            <button class="callout-menu-chip ${active ? 'active' : ''}" data-emoji="${escapeAttr(p.emoji)}" data-color="${p.color}" data-callout-preview="${p.color}">
+              <span class="callout-menu-chip-emoji">${escapeHtml(p.emoji)}</span>
+              <span class="callout-menu-chip-label">${p.label}</span>
+              ${active ? '<span class="callout-menu-chip-check">✓</span>' : ''}
+            </button>`;
+          }).join('')}
+        </div>
+        <div class="callout-menu-divider"></div>
+        <div class="callout-menu-color-label">Color</div>
+        <div class="callout-menu-color-grid">
+          ${SWATCH_COLORS.map((c) => `
+            <button class="callout-menu-color-swatch ${c === currentColor ? 'active' : ''}" data-color="${c}" title="${escapeAttr(COLOR_LABELS[c] ?? c)}" aria-label="${escapeAttr(COLOR_LABELS[c] ?? c)}"></button>
           `).join('')}
         </div>
         <div class="callout-menu-divider"></div>
@@ -128,10 +135,23 @@ export function createCalloutMenu(editor: Editor): CalloutMenu {
     el.querySelectorAll<HTMLButtonElement>('.callout-menu-chip').forEach((row) => {
       row.addEventListener('mousedown', (e) => {
         e.preventDefault();
-        const newType = row.dataset.type as CalloutTypeDef['id'];
-        const newEmoji = DEFAULT_EMOJI_BY_TYPE[newType] ?? '💡';
-        setAttrs(newType, newEmoji);
+        const newEmoji = row.dataset.emoji || DEFAULT_EMOJI;
+        const newColor = (row.dataset.color as CalloutColor) || null;
+        setAttrs(newEmoji, newColor);
         close();
+      });
+    });
+
+    el.querySelectorAll<HTMLButtonElement>('.callout-menu-color-swatch').forEach((sw) => {
+      sw.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        const newColor = sw.dataset.color as CalloutColor | undefined;
+        if (!newColor) return;
+        setAttrs(null, newColor);
+        // Reflect the new selection without closing — keep tweaking.
+        el.querySelectorAll<HTMLElement>('.callout-menu-color-swatch').forEach((s) =>
+          s.classList.toggle('active', s.dataset.color === newColor),
+        );
       });
     });
 
@@ -144,25 +164,22 @@ export function createCalloutMenu(editor: Editor): CalloutMenu {
     el.querySelector<HTMLButtonElement>('[data-action="back"]')?.addEventListener('mousedown', (e) => {
       e.preventDefault();
       e.stopPropagation();
-      showView('types');
+      showView('presets');
     });
 
     const input = el.querySelector<HTMLInputElement>('.callout-menu-emoji-input');
     function applyInput(): void {
       const raw = input?.value.trim() ?? '';
       if (!raw) return;
-      setAttrs(null, raw);
-      // Update the trigger preview and return to the types view; the callout
-      // itself reflects the change because setAttrs has already fired.
+      setAttrs(raw, null);
       refreshTriggerPreview();
-      showView('types');
+      showView('presets');
     }
 
     function refreshTriggerPreview(): void {
       const next = input?.value.trim() ?? '';
       const cur = el.querySelector<HTMLElement>('.callout-menu-emoji-current');
       if (cur) cur.textContent = next;
-      // Also reflect the change on the active type chip in the types view.
       const activeChipEmoji = el.querySelector<HTMLElement>('.callout-menu-chip.active .callout-menu-chip-emoji');
       if (activeChipEmoji) activeChipEmoji.textContent = next;
     }
@@ -173,7 +190,7 @@ export function createCalloutMenu(editor: Editor): CalloutMenu {
         applyInput();
       } else if (e.key === 'Escape') {
         e.preventDefault();
-        showView('types');
+        showView('presets');
       }
     });
     input?.addEventListener('mousedown', (e) => { e.stopPropagation(); });
@@ -191,21 +208,20 @@ export function createCalloutMenu(editor: Editor): CalloutMenu {
         const next = cell.dataset.emoji ?? '';
         if (!next) return;
         if (input) input.value = next;
-        setAttrs(null, next);
+        setAttrs(next, null);
         refreshTriggerPreview();
-        showView('types');
+        showView('presets');
       });
     });
 
     el.querySelector<HTMLButtonElement>('[data-action="reset"]')?.addEventListener('mousedown', (e) => {
       e.preventDefault();
-      const defaultEmoji = DEFAULT_EMOJI_BY_TYPE[currentType];
-      setAttrs(null, defaultEmoji);
-      if (input) input.value = defaultEmoji;
+      setAttrs(DEFAULT_EMOJI, null);
+      if (input) input.value = DEFAULT_EMOJI;
       const cur = el.querySelector<HTMLElement>('.callout-menu-emoji-current');
-      if (cur) cur.textContent = defaultEmoji;
+      if (cur) cur.textContent = DEFAULT_EMOJI;
       const activeChipEmoji = el.querySelector<HTMLElement>('.callout-menu-chip.active .callout-menu-chip-emoji');
-      if (activeChipEmoji) activeChipEmoji.textContent = defaultEmoji;
+      if (activeChipEmoji) activeChipEmoji.textContent = DEFAULT_EMOJI;
     });
   }
 
@@ -214,9 +230,9 @@ export function createCalloutMenu(editor: Editor): CalloutMenu {
       pos = calloutPos;
       const node = editor.state.doc.nodeAt(calloutPos);
       if (!node || node.type.name !== 'callout') return;
-      const currentType = (node.attrs.type as CalloutTypeDef['id']) ?? 'note';
-      const currentEmoji = (node.attrs.emoji as string) ?? DEFAULT_EMOJI_BY_TYPE[currentType];
-      render(currentType, currentEmoji);
+      const currentEmoji = (node.attrs.emoji as string) ?? DEFAULT_EMOJI;
+      const currentColor = (node.attrs.color as CalloutColor) ?? 'gray_bg';
+      render(currentEmoji, currentColor);
       el.classList.add('open');
       const rect = anchorEl.getBoundingClientRect();
       el.style.left = `${rect.left}px`;
@@ -231,7 +247,7 @@ export function createCalloutMenu(editor: Editor): CalloutMenu {
         }
       });
     } catch (err) {
-      console.error('[md-editor-plus] calloutMenu.open failed', err);
+      console.error('[notion-md-editor] calloutMenu.open failed', err);
     }
   }
 
@@ -269,7 +285,7 @@ export function createCalloutMenu(editor: Editor): CalloutMenu {
       const calloutPos = $pos.before(1);
       open(emojiEl, calloutPos);
     } catch (err) {
-      console.error('[md-editor-plus] callout emoji click failed', err);
+      console.error('[notion-md-editor] callout emoji click failed', err);
     }
   });
 

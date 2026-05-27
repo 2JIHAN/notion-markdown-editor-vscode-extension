@@ -88,7 +88,7 @@ export function createEditor(
   try {
     body = preprocessMarkdownCallouts(split.body);
   } catch (err) {
-    console.error('[md-editor-plus] callout preprocess failed', err);
+    console.error('[notion-md-editor] callout preprocess failed', err);
     body = split.body;
   }
 
@@ -146,7 +146,7 @@ export function updateContent(markdown: string): void {
   try {
     next = preprocessMarkdownCallouts(split.body);
   } catch (err) {
-    console.error('[md-editor-plus] callout preprocess failed', err);
+    console.error('[notion-md-editor] callout preprocess failed', err);
     next = split.body;
   }
   // Preserve viewport scroll and best-effort cursor across the re-set. setContent

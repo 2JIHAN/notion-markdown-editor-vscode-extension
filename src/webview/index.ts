@@ -865,11 +865,11 @@ function init(): void {
           });
         }
       } catch (err) {
-        console.error('[md-editor-plus] outline init failed', err);
+        console.error('[notion-md-editor] outline init failed', err);
       }
       } catch (err) {
-        console.error('[md-editor-plus] INIT FAILED', err);
-        document.body.innerHTML = '<pre style="padding:20px;color:#c44">md-editor-plus init failed:\n\n' + String(err && (err as Error).stack || err) + '</pre>';
+        console.error('[notion-md-editor] INIT FAILED', err);
+        document.body.innerHTML = '<pre style="padding:20px;color:#c44">notion-md-editor init failed:\n\n' + String(err && (err as Error).stack || err) + '</pre>';
       }
     }
 

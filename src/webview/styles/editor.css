@@ -1181,30 +1181,100 @@ html.source-full-width #source-view {
   padding: 12px 16px;
   margin: 0.75rem 0;
 }
-.ProseMirror .callout[data-type="note"] {
-  background: var(--callout-note-bg, var(--callout-bg));
-  border-color: var(--callout-note-border, var(--callout-border));
-  --callout-accent: var(--callout-note-accent, var(--callout-note-border));
+.ProseMirror .callout[data-color="default"] {
+  background: var(--callout-default-bg, var(--callout-bg));
+  border-color: var(--callout-default-border, var(--callout-border));
+  --callout-accent: var(--callout-default-accent, var(--callout-default-border));
 }
-.ProseMirror .callout[data-type="tip"] {
-  background: var(--callout-tip-bg, var(--callout-bg));
-  border-color: var(--callout-tip-border, var(--callout-border));
-  --callout-accent: var(--callout-tip-accent, var(--callout-tip-border));
+.ProseMirror .callout[data-color="gray"] {
+  background: var(--callout-gray-bg, var(--callout-bg));
+  border-color: var(--callout-gray-border, var(--callout-border));
+  --callout-accent: var(--callout-gray-accent, var(--callout-gray-border));
 }
-.ProseMirror .callout[data-type="important"] {
-  background: var(--callout-important-bg, var(--callout-bg));
-  border-color: var(--callout-important-border, var(--callout-border));
-  --callout-accent: var(--callout-important-accent, var(--callout-important-border));
+.ProseMirror .callout[data-color="brown"] {
+  background: var(--callout-brown-bg, var(--callout-bg));
+  border-color: var(--callout-brown-border, var(--callout-border));
+  --callout-accent: var(--callout-brown-accent, var(--callout-brown-border));
 }
-.ProseMirror .callout[data-type="warning"] {
-  background: var(--callout-warning-bg, var(--callout-bg));
-  border-color: var(--callout-warning-border, var(--callout-border));
-  --callout-accent: var(--callout-warning-accent, var(--callout-warning-border));
+.ProseMirror .callout[data-color="orange"] {
+  background: var(--callout-orange-bg, var(--callout-bg));
+  border-color: var(--callout-orange-border, var(--callout-border));
+  --callout-accent: var(--callout-orange-accent, var(--callout-orange-border));
 }
-.ProseMirror .callout[data-type="caution"] {
-  background: var(--callout-caution-bg, var(--callout-bg));
-  border-color: var(--callout-caution-border, var(--callout-border));
-  --callout-accent: var(--callout-caution-accent, var(--callout-caution-border));
+.ProseMirror .callout[data-color="yellow"] {
+  background: var(--callout-yellow-bg, var(--callout-bg));
+  border-color: var(--callout-yellow-border, var(--callout-border));
+  --callout-accent: var(--callout-yellow-accent, var(--callout-yellow-border));
+}
+.ProseMirror .callout[data-color="green"] {
+  background: var(--callout-green-bg, var(--callout-bg));
+  border-color: var(--callout-green-border, var(--callout-border));
+  --callout-accent: var(--callout-green-accent, var(--callout-green-border));
+}
+.ProseMirror .callout[data-color="blue"] {
+  background: var(--callout-blue-bg, var(--callout-bg));
+  border-color: var(--callout-blue-border, var(--callout-border));
+  --callout-accent: var(--callout-blue-accent, var(--callout-blue-border));
+}
+.ProseMirror .callout[data-color="purple"] {
+  background: var(--callout-purple-bg, var(--callout-bg));
+  border-color: var(--callout-purple-border, var(--callout-border));
+  --callout-accent: var(--callout-purple-accent, var(--callout-purple-border));
+}
+.ProseMirror .callout[data-color="pink"] {
+  background: var(--callout-pink-bg, var(--callout-bg));
+  border-color: var(--callout-pink-border, var(--callout-border));
+  --callout-accent: var(--callout-pink-accent, var(--callout-pink-border));
+}
+.ProseMirror .callout[data-color="red"] {
+  background: var(--callout-red-bg, var(--callout-bg));
+  border-color: var(--callout-red-border, var(--callout-border));
+  --callout-accent: var(--callout-red-accent, var(--callout-red-border));
+}
+.ProseMirror .callout[data-color="gray_bg"] {
+  background: var(--callout-gray-bg-bg, var(--callout-bg));
+  border-color: var(--callout-gray-bg-border, var(--callout-border));
+  --callout-accent: var(--callout-gray-bg-accent, var(--callout-gray-bg-border));
+}
+.ProseMirror .callout[data-color="brown_bg"] {
+  background: var(--callout-brown-bg-bg, var(--callout-bg));
+  border-color: var(--callout-brown-bg-border, var(--callout-border));
+  --callout-accent: var(--callout-brown-bg-accent, var(--callout-brown-bg-border));
+}
+.ProseMirror .callout[data-color="orange_bg"] {
+  background: var(--callout-orange-bg-bg, var(--callout-bg));
+  border-color: var(--callout-orange-bg-border, var(--callout-border));
+  --callout-accent: var(--callout-orange-bg-accent, var(--callout-orange-bg-border));
+}
+.ProseMirror .callout[data-color="yellow_bg"] {
+  background: var(--callout-yellow-bg-bg, var(--callout-bg));
+  border-color: var(--callout-yellow-bg-border, var(--callout-border));
+  --callout-accent: var(--callout-yellow-bg-accent, var(--callout-yellow-bg-border));
+}
+.ProseMirror .callout[data-color="green_bg"] {
+  background: var(--callout-green-bg-bg, var(--callout-bg));
+  border-color: var(--callout-green-bg-border, var(--callout-border));
+  --callout-accent: var(--callout-green-bg-accent, var(--callout-green-bg-border));
+}
+.ProseMirror .callout[data-color="blue_bg"] {
+  background: var(--callout-blue-bg-bg, var(--callout-bg));
+  border-color: var(--callout-blue-bg-border, var(--callout-border));
+  --callout-accent: var(--callout-blue-bg-accent, var(--callout-blue-bg-border));
+}
+.ProseMirror .callout[data-color="purple_bg"] {
+  background: var(--callout-purple-bg-bg, var(--callout-bg));
+  border-color: var(--callout-purple-bg-border, var(--callout-border));
+  --callout-accent: var(--callout-purple-bg-accent, var(--callout-purple-bg-border));
+}
+.ProseMirror .callout[data-color="pink_bg"] {
+  background: var(--callout-pink-bg-bg, var(--callout-bg));
+  border-color: var(--callout-pink-bg-border, var(--callout-border));
+  --callout-accent: var(--callout-pink-bg-accent, var(--callout-pink-bg-border));
+}
+.ProseMirror .callout[data-color="red_bg"] {
+  background: var(--callout-red-bg-bg, var(--callout-bg));
+  border-color: var(--callout-red-bg-border, var(--callout-border));
+  --callout-accent: var(--callout-red-bg-accent, var(--callout-red-bg-border));
 }
 .ProseMirror .callout-emoji {
   flex-shrink: 0;
@@ -2023,25 +2093,81 @@ html.source-full-width #source-view {
   font-size: 18px;
   line-height: 1;
 }
-.block-picker-icon:has(> .block-picker-emoji-icon[data-callout-preview="note"]) {
-  background: var(--callout-note-bg, var(--bg));
-  border-color: var(--callout-note-border, var(--border));
+.block-picker-icon:has(> .block-picker-emoji-icon[data-callout-preview="default"]) {
+  background: var(--callout-default-bg, var(--bg));
+  border-color: var(--callout-default-border, var(--border));
 }
-.block-picker-icon:has(> .block-picker-emoji-icon[data-callout-preview="tip"]) {
-  background: var(--callout-tip-bg, var(--bg));
-  border-color: var(--callout-tip-border, var(--border));
+.block-picker-icon:has(> .block-picker-emoji-icon[data-callout-preview="gray"]) {
+  background: var(--callout-gray-bg, var(--bg));
+  border-color: var(--callout-gray-border, var(--border));
 }
-.block-picker-icon:has(> .block-picker-emoji-icon[data-callout-preview="important"]) {
-  background: var(--callout-important-bg, var(--bg));
-  border-color: var(--callout-important-border, var(--border));
+.block-picker-icon:has(> .block-picker-emoji-icon[data-callout-preview="brown"]) {
+  background: var(--callout-brown-bg, var(--bg));
+  border-color: var(--callout-brown-border, var(--border));
 }
-.block-picker-icon:has(> .block-picker-emoji-icon[data-callout-preview="warning"]) {
-  background: var(--callout-warning-bg, var(--bg));
-  border-color: var(--callout-warning-border, var(--border));
+.block-picker-icon:has(> .block-picker-emoji-icon[data-callout-preview="orange"]) {
+  background: var(--callout-orange-bg, var(--bg));
+  border-color: var(--callout-orange-border, var(--border));
 }
-.block-picker-icon:has(> .block-picker-emoji-icon[data-callout-preview="caution"]) {
-  background: var(--callout-caution-bg, var(--bg));
-  border-color: var(--callout-caution-border, var(--border));
+.block-picker-icon:has(> .block-picker-emoji-icon[data-callout-preview="yellow"]) {
+  background: var(--callout-yellow-bg, var(--bg));
+  border-color: var(--callout-yellow-border, var(--border));
+}
+.block-picker-icon:has(> .block-picker-emoji-icon[data-callout-preview="green"]) {
+  background: var(--callout-green-bg, var(--bg));
+  border-color: var(--callout-green-border, var(--border));
+}
+.block-picker-icon:has(> .block-picker-emoji-icon[data-callout-preview="blue"]) {
+  background: var(--callout-blue-bg, var(--bg));
+  border-color: var(--callout-blue-border, var(--border));
+}
+.block-picker-icon:has(> .block-picker-emoji-icon[data-callout-preview="purple"]) {
+  background: var(--callout-purple-bg, var(--bg));
+  border-color: var(--callout-purple-border, var(--border));
+}
+.block-picker-icon:has(> .block-picker-emoji-icon[data-callout-preview="pink"]) {
+  background: var(--callout-pink-bg, var(--bg));
+  border-color: var(--callout-pink-border, var(--border));
+}
+.block-picker-icon:has(> .block-picker-emoji-icon[data-callout-preview="red"]) {
+  background: var(--callout-red-bg, var(--bg));
+  border-color: var(--callout-red-border, var(--border));
+}
+.block-picker-icon:has(> .block-picker-emoji-icon[data-callout-preview="gray_bg"]) {
+  background: var(--callout-gray-bg-bg, var(--bg));
+  border-color: var(--callout-gray-bg-border, var(--border));
+}
+.block-picker-icon:has(> .block-picker-emoji-icon[data-callout-preview="brown_bg"]) {
+  background: var(--callout-brown-bg-bg, var(--bg));
+  border-color: var(--callout-brown-bg-border, var(--border));
+}
+.block-picker-icon:has(> .block-picker-emoji-icon[data-callout-preview="orange_bg"]) {
+  background: var(--callout-orange-bg-bg, var(--bg));
+  border-color: var(--callout-orange-bg-border, var(--border));
+}
+.block-picker-icon:has(> .block-picker-emoji-icon[data-callout-preview="yellow_bg"]) {
+  background: var(--callout-yellow-bg-bg, var(--bg));
+  border-color: var(--callout-yellow-bg-border, var(--border));
+}
+.block-picker-icon:has(> .block-picker-emoji-icon[data-callout-preview="green_bg"]) {
+  background: var(--callout-green-bg-bg, var(--bg));
+  border-color: var(--callout-green-bg-border, var(--border));
+}
+.block-picker-icon:has(> .block-picker-emoji-icon[data-callout-preview="blue_bg"]) {
+  background: var(--callout-blue-bg-bg, var(--bg));
+  border-color: var(--callout-blue-bg-border, var(--border));
+}
+.block-picker-icon:has(> .block-picker-emoji-icon[data-callout-preview="purple_bg"]) {
+  background: var(--callout-purple-bg-bg, var(--bg));
+  border-color: var(--callout-purple-bg-border, var(--border));
+}
+.block-picker-icon:has(> .block-picker-emoji-icon[data-callout-preview="pink_bg"]) {
+  background: var(--callout-pink-bg-bg, var(--bg));
+  border-color: var(--callout-pink-bg-border, var(--border));
+}
+.block-picker-icon:has(> .block-picker-emoji-icon[data-callout-preview="red_bg"]) {
+  background: var(--callout-red-bg-bg, var(--bg));
+  border-color: var(--callout-red-bg-border, var(--border));
 }
 
 .callout-menu {
@@ -2094,36 +2220,157 @@ html.source-full-width #source-view {
   width: 100%;
   transition: filter 0.1s, box-shadow 0.1s;
 }
-.callout-menu-chip[data-callout-preview="note"] {
-  background: var(--callout-note-bg, var(--callout-bg));
-  border-color: var(--callout-note-border, var(--callout-border));
-  --callout-accent: var(--callout-note-accent, var(--callout-note-border));
+.callout-menu-chip[data-callout-preview="default"] {
+  background: var(--callout-default-bg, var(--callout-bg));
+  border-color: var(--callout-default-border, var(--callout-border));
+  --callout-accent: var(--callout-default-accent, var(--callout-default-border));
 }
-.callout-menu-chip[data-callout-preview="tip"] {
-  background: var(--callout-tip-bg, var(--callout-bg));
-  border-color: var(--callout-tip-border, var(--callout-border));
-  --callout-accent: var(--callout-tip-accent, var(--callout-tip-border));
+.callout-menu-chip[data-callout-preview="gray"] {
+  background: var(--callout-gray-bg, var(--callout-bg));
+  border-color: var(--callout-gray-border, var(--callout-border));
+  --callout-accent: var(--callout-gray-accent, var(--callout-gray-border));
 }
-.callout-menu-chip[data-callout-preview="important"] {
-  background: var(--callout-important-bg, var(--callout-bg));
-  border-color: var(--callout-important-border, var(--callout-border));
-  --callout-accent: var(--callout-important-accent, var(--callout-important-border));
+.callout-menu-chip[data-callout-preview="brown"] {
+  background: var(--callout-brown-bg, var(--callout-bg));
+  border-color: var(--callout-brown-border, var(--callout-border));
+  --callout-accent: var(--callout-brown-accent, var(--callout-brown-border));
 }
-.callout-menu-chip[data-callout-preview="warning"] {
-  background: var(--callout-warning-bg, var(--callout-bg));
-  border-color: var(--callout-warning-border, var(--callout-border));
-  --callout-accent: var(--callout-warning-accent, var(--callout-warning-border));
+.callout-menu-chip[data-callout-preview="orange"] {
+  background: var(--callout-orange-bg, var(--callout-bg));
+  border-color: var(--callout-orange-border, var(--callout-border));
+  --callout-accent: var(--callout-orange-accent, var(--callout-orange-border));
 }
-.callout-menu-chip[data-callout-preview="caution"] {
-  background: var(--callout-caution-bg, var(--callout-bg));
-  border-color: var(--callout-caution-border, var(--callout-border));
-  --callout-accent: var(--callout-caution-accent, var(--callout-caution-border));
+.callout-menu-chip[data-callout-preview="yellow"] {
+  background: var(--callout-yellow-bg, var(--callout-bg));
+  border-color: var(--callout-yellow-border, var(--callout-border));
+  --callout-accent: var(--callout-yellow-accent, var(--callout-yellow-border));
+}
+.callout-menu-chip[data-callout-preview="green"] {
+  background: var(--callout-green-bg, var(--callout-bg));
+  border-color: var(--callout-green-border, var(--callout-border));
+  --callout-accent: var(--callout-green-accent, var(--callout-green-border));
+}
+.callout-menu-chip[data-callout-preview="blue"] {
+  background: var(--callout-blue-bg, var(--callout-bg));
+  border-color: var(--callout-blue-border, var(--callout-border));
+  --callout-accent: var(--callout-blue-accent, var(--callout-blue-border));
+}
+.callout-menu-chip[data-callout-preview="purple"] {
+  background: var(--callout-purple-bg, var(--callout-bg));
+  border-color: var(--callout-purple-border, var(--callout-border));
+  --callout-accent: var(--callout-purple-accent, var(--callout-purple-border));
+}
+.callout-menu-chip[data-callout-preview="pink"] {
+  background: var(--callout-pink-bg, var(--callout-bg));
+  border-color: var(--callout-pink-border, var(--callout-border));
+  --callout-accent: var(--callout-pink-accent, var(--callout-pink-border));
+}
+.callout-menu-chip[data-callout-preview="red"] {
+  background: var(--callout-red-bg, var(--callout-bg));
+  border-color: var(--callout-red-border, var(--callout-border));
+  --callout-accent: var(--callout-red-accent, var(--callout-red-border));
+}
+.callout-menu-chip[data-callout-preview="gray_bg"] {
+  background: var(--callout-gray-bg-bg, var(--callout-bg));
+  border-color: var(--callout-gray-bg-border, var(--callout-border));
+  --callout-accent: var(--callout-gray-bg-accent, var(--callout-gray-bg-border));
+}
+.callout-menu-chip[data-callout-preview="brown_bg"] {
+  background: var(--callout-brown-bg-bg, var(--callout-bg));
+  border-color: var(--callout-brown-bg-border, var(--callout-border));
+  --callout-accent: var(--callout-brown-bg-accent, var(--callout-brown-bg-border));
+}
+.callout-menu-chip[data-callout-preview="orange_bg"] {
+  background: var(--callout-orange-bg-bg, var(--callout-bg));
+  border-color: var(--callout-orange-bg-border, var(--callout-border));
+  --callout-accent: var(--callout-orange-bg-accent, var(--callout-orange-bg-border));
+}
+.callout-menu-chip[data-callout-preview="yellow_bg"] {
+  background: var(--callout-yellow-bg-bg, var(--callout-bg));
+  border-color: var(--callout-yellow-bg-border, var(--callout-border));
+  --callout-accent: var(--callout-yellow-bg-accent, var(--callout-yellow-bg-border));
+}
+.callout-menu-chip[data-callout-preview="green_bg"] {
+  background: var(--callout-green-bg-bg, var(--callout-bg));
+  border-color: var(--callout-green-bg-border, var(--callout-border));
+  --callout-accent: var(--callout-green-bg-accent, var(--callout-green-bg-border));
+}
+.callout-menu-chip[data-callout-preview="blue_bg"] {
+  background: var(--callout-blue-bg-bg, var(--callout-bg));
+  border-color: var(--callout-blue-bg-border, var(--callout-border));
+  --callout-accent: var(--callout-blue-bg-accent, var(--callout-blue-bg-border));
+}
+.callout-menu-chip[data-callout-preview="purple_bg"] {
+  background: var(--callout-purple-bg-bg, var(--callout-bg));
+  border-color: var(--callout-purple-bg-border, var(--callout-border));
+  --callout-accent: var(--callout-purple-bg-accent, var(--callout-purple-bg-border));
+}
+.callout-menu-chip[data-callout-preview="pink_bg"] {
+  background: var(--callout-pink-bg-bg, var(--callout-bg));
+  border-color: var(--callout-pink-bg-border, var(--callout-border));
+  --callout-accent: var(--callout-pink-bg-accent, var(--callout-pink-bg-border));
+}
+.callout-menu-chip[data-callout-preview="red_bg"] {
+  background: var(--callout-red-bg-bg, var(--callout-bg));
+  border-color: var(--callout-red-bg-border, var(--callout-border));
+  --callout-accent: var(--callout-red-bg-accent, var(--callout-red-bg-border));
 }
 .callout-menu-chip:hover { filter: brightness(0.97); }
 .theme-dark .callout-menu-chip:hover { filter: brightness(1.15); }
 .callout-menu-chip.active {
   box-shadow: 0 0 0 2px var(--callout-accent);
 }
+
+/* Color picker swatches — Notion 18 colors (9 text + 9 background). */
+.callout-menu-color-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 2px 4px 6px;
+}
+.callout-menu-color-grid {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  gap: 6px;
+  padding: 0 4px 2px;
+}
+.callout-menu-color-swatch {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1px solid var(--callout-border);
+  background: var(--callout-bg);
+  cursor: pointer;
+  padding: 0;
+  transition: transform 0.08s;
+}
+.callout-menu-color-swatch:hover { transform: scale(1.12); }
+.callout-menu-color-swatch.active {
+  outline: 2px solid var(--text-secondary);
+  outline-offset: 1px;
+}
+.callout-menu-color-swatch[data-color="gray"] { background: var(--callout-gray-bg); }
+.callout-menu-color-swatch[data-color="brown"] { background: var(--callout-brown-bg); }
+.callout-menu-color-swatch[data-color="orange"] { background: var(--callout-orange-bg); }
+.callout-menu-color-swatch[data-color="yellow"] { background: var(--callout-yellow-bg); }
+.callout-menu-color-swatch[data-color="green"] { background: var(--callout-green-bg); }
+.callout-menu-color-swatch[data-color="blue"] { background: var(--callout-blue-bg); }
+.callout-menu-color-swatch[data-color="purple"] { background: var(--callout-purple-bg); }
+.callout-menu-color-swatch[data-color="pink"] { background: var(--callout-pink-bg); }
+.callout-menu-color-swatch[data-color="red"] { background: var(--callout-red-bg); }
+.callout-menu-color-swatch[data-color="gray_bg"] { background: var(--callout-gray-bg-bg); }
+.callout-menu-color-swatch[data-color="brown_bg"] { background: var(--callout-brown-bg-bg); }
+.callout-menu-color-swatch[data-color="orange_bg"] { background: var(--callout-orange-bg-bg); }
+.callout-menu-color-swatch[data-color="yellow_bg"] { background: var(--callout-yellow-bg-bg); }
+.callout-menu-color-swatch[data-color="green_bg"] { background: var(--callout-green-bg-bg); }
+.callout-menu-color-swatch[data-color="blue_bg"] { background: var(--callout-blue-bg-bg); }
+.callout-menu-color-swatch[data-color="purple_bg"] { background: var(--callout-purple-bg-bg); }
+.callout-menu-color-swatch[data-color="pink_bg"] { background: var(--callout-pink-bg-bg); }
+.callout-menu-color-swatch[data-color="red_bg"] { background: var(--callout-red-bg-bg); }
 
 .callout-menu-chip-emoji {
   width: 24px;

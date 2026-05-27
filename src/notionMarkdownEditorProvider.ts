@@ -62,16 +62,16 @@ function renderHtmlToPdf(chromePath: string, htmlPath: string, pdfPath: string):
   });
 }
 
-export class MdEditorPlusProvider implements vscode.CustomTextEditorProvider {
-  private static readonly viewType = 'md-editor-plus.editor';
+export class NotionMarkdownEditorProvider implements vscode.CustomTextEditorProvider {
+  private static readonly viewType = 'notionMdEditor.editor';
   private _isApplyingEdit = false;
 
   constructor(private readonly _extensionUri: vscode.Uri) {}
 
   public static register(context: vscode.ExtensionContext): vscode.Disposable {
-    const provider = new MdEditorPlusProvider(context.extensionUri);
+    const provider = new NotionMarkdownEditorProvider(context.extensionUri);
     return vscode.window.registerCustomEditorProvider(
-      MdEditorPlusProvider.viewType,
+      NotionMarkdownEditorProvider.viewType,
       provider,
       {
         webviewOptions: { retainContextWhenHidden: true },
@@ -103,7 +103,7 @@ export class MdEditorPlusProvider implements vscode.CustomTextEditorProvider {
     const mediaBaseUri = webviewPanel.webview.asWebviewUri(docDir).toString().replace(/\/?$/, '/');
 
     const sendInit = () => {
-      const cfg = vscode.workspace.getConfiguration('mdEditorPlus');
+      const cfg = vscode.workspace.getConfiguration('notionMdEditor');
       webviewPanel.webview.postMessage({
         type: 'init',
         markdown: document.getText(),
@@ -153,7 +153,7 @@ export class MdEditorPlusProvider implements vscode.CustomTextEditorProvider {
         await this._applyEdit(document, msg.markdown);
       }
       if (msg.type === 'saveDefaults' && msg.defaults) {
-        const cfg = vscode.workspace.getConfiguration('mdEditorPlus');
+        const cfg = vscode.workspace.getConfiguration('notionMdEditor');
         const target = vscode.ConfigurationTarget.Global;
         const d = msg.defaults;
         await Promise.all([
@@ -167,10 +167,10 @@ export class MdEditorPlusProvider implements vscode.CustomTextEditorProvider {
           cfg.update('sourceFullWidth',     d.sourceFullWidth,     target),
           cfg.update('shortenCodeSnippets', d.shortenCodeSnippets, target),
         ]);
-        await vscode.window.showInformationMessage('MD Editor Plus: current view saved as default');
+        await vscode.window.showInformationMessage('Notion Markdown Editor: current view saved as default');
       }
       if (msg.type === 'resetDefaults') {
-        const cfg = vscode.workspace.getConfiguration('mdEditorPlus');
+        const cfg = vscode.workspace.getConfiguration('notionMdEditor');
         const keys = ['theme','font','textSize','pageWidth','fullWidth','alwaysDarkCode','alwaysDarkSource','sourceFullWidth','shortenCodeSnippets'];
         for (const k of keys) {
           // Clear at all scopes so the package.json defaults take over.
@@ -178,7 +178,7 @@ export class MdEditorPlusProvider implements vscode.CustomTextEditorProvider {
           await cfg.update(k, undefined, vscode.ConfigurationTarget.Workspace).then(() => {}, () => {});
           await cfg.update(k, undefined, vscode.ConfigurationTarget.WorkspaceFolder).then(() => {}, () => {});
         }
-        await vscode.window.showInformationMessage('MD Editor Plus: defaults reset');
+        await vscode.window.showInformationMessage('Notion Markdown Editor: defaults reset');
       }
       if (msg.type === 'openInFinder') {
         await vscode.commands.executeCommand('revealFileInOS', document.uri);
@@ -200,21 +200,21 @@ export class MdEditorPlusProvider implements vscode.CustomTextEditorProvider {
       if (msg.type === 'saveOutlineVisible') {
         const value = (msg as unknown as { value?: unknown }).value;
         if (typeof value !== 'boolean') return;
-        const cfg = vscode.workspace.getConfiguration('mdEditorPlus');
+        const cfg = vscode.workspace.getConfiguration('notionMdEditor');
         await cfg.update('outlineVisible', value, vscode.ConfigurationTarget.Global);
         return;
       }
       if (msg.type === 'saveReadOnly') {
         const value = (msg as unknown as { value?: unknown }).value;
         if (typeof value !== 'boolean') return;
-        const cfg = vscode.workspace.getConfiguration('mdEditorPlus');
+        const cfg = vscode.workspace.getConfiguration('notionMdEditor');
         await cfg.update('readOnly', value, vscode.ConfigurationTarget.Global);
         return;
       }
       if (msg.type === 'saveSourceWordWrap') {
         const value = (msg as unknown as { value?: unknown }).value;
         if (typeof value !== 'boolean') return;
-        const cfg = vscode.workspace.getConfiguration('mdEditorPlus');
+        const cfg = vscode.workspace.getConfiguration('notionMdEditor');
         await cfg.update('sourceWordWrap', value, vscode.ConfigurationTarget.Global);
         return;
       }
@@ -248,12 +248,12 @@ export class MdEditorPlusProvider implements vscode.CustomTextEditorProvider {
             title: 'Export as PDF',
           });
           if (!target) return;
-          const tmpHtml = path.join(os.tmpdir(), `md-editor-plus-${Date.now()}-${base}.html`);
+          const tmpHtml = path.join(os.tmpdir(), `notion-md-editor-${Date.now()}-${base}.html`);
           try {
             fs.writeFileSync(tmpHtml, html, 'utf8');
             await renderHtmlToPdf(chromePath, tmpHtml, target.fsPath);
           } catch (err) {
-            await vscode.window.showErrorMessage(`MD Editor Plus: PDF export failed — ${(err as Error).message}`);
+            await vscode.window.showErrorMessage(`Notion Markdown Editor: PDF export failed — ${(err as Error).message}`);
             return;
           } finally {
             try { fs.unlinkSync(tmpHtml); } catch { /* ignore */ }
@@ -273,12 +273,12 @@ export class MdEditorPlusProvider implements vscode.CustomTextEditorProvider {
           '</body>',
           `<script>window.addEventListener('load', () => setTimeout(window.print, 250));</script></body>`,
         );
-        const tmpPath = path.join(os.tmpdir(), `md-editor-plus-${Date.now()}-${base}.html`);
+        const tmpPath = path.join(os.tmpdir(), `notion-md-editor-${Date.now()}-${base}.html`);
         const tmpUri = vscode.Uri.file(tmpPath);
         try {
           await vscode.workspace.fs.writeFile(tmpUri, Buffer.from(autoPrintHtml, 'utf8'));
         } catch (err) {
-          await vscode.window.showErrorMessage(`MD Editor Plus: PDF export failed — ${(err as Error).message}`);
+          await vscode.window.showErrorMessage(`Notion Markdown Editor: PDF export failed — ${(err as Error).message}`);
           return;
         }
         await vscode.env.openExternal(tmpUri);
@@ -302,7 +302,7 @@ export class MdEditorPlusProvider implements vscode.CustomTextEditorProvider {
         try {
           await vscode.workspace.fs.writeFile(target, Buffer.from(html, 'utf8'));
         } catch (err) {
-          await vscode.window.showErrorMessage(`MD Editor Plus: export failed — ${(err as Error).message}`);
+          await vscode.window.showErrorMessage(`Notion Markdown Editor: export failed — ${(err as Error).message}`);
           return;
         }
         const open = 'Open';
@@ -320,7 +320,7 @@ export class MdEditorPlusProvider implements vscode.CustomTextEditorProvider {
         const name = base.replace(/(\.md)$/i, '') + ' copy.md';
         const newUri = vscode.Uri.joinPath(dir, name);
         await vscode.workspace.fs.writeFile(newUri, Buffer.from(document.getText(), 'utf8'));
-        await vscode.commands.executeCommand('vscode.openWith', newUri, 'md-editor-plus.editor');
+        await vscode.commands.executeCommand('vscode.openWith', newUri, 'notionMdEditor.editor');
       }
     });
 
@@ -391,11 +391,11 @@ export class MdEditorPlusProvider implements vscode.CustomTextEditorProvider {
              script-src 'nonce-${nonce}';
              img-src ${webview.cspSource} data: https:;">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MD Editor Plus</title>
+  <title>Notion Markdown Editor</title>
 </head>
 <body>
   <div id="toolbar">
-    <span class="toolbar-logo" data-tip="MD Editor Plus">${iAppLogo}</span>
+    <span class="toolbar-logo" data-tip="Notion Markdown Editor">${iAppLogo}</span>
     <div class="segmented" id="view-seg">
       <button class="seg-btn active" data-view="preview" data-tip="Notion view — rich rendering">${iEye}<span class="seg-label">Preview</span></button>
       <button class="seg-btn" data-view="source" data-tip="Source view — raw markdown">${iCode}<span class="seg-label">Code</span><span class="fm-badge hidden" id="fm-badge" aria-hidden="true"></span></button>

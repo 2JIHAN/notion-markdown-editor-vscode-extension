@@ -5,23 +5,84 @@
   --text-secondary: #9b9a97;
   --border: #e8e8e8;
   --block-hover: #f5f5f5;
-  --callout-bg: #f0f0f0;
-  --callout-border: #e0e0e0;
-  --callout-note-bg: #ddf4ff;
-  --callout-note-border: #b6e3ff;
-  --callout-note-accent: #0969da;
-  --callout-tip-bg: #dafbe1;
-  --callout-tip-border: #aceebb;
-  --callout-tip-accent: #1a7f37;
-  --callout-important-bg: #fbefff;
-  --callout-important-border: #e2c5ff;
-  --callout-important-accent: #8250df;
-  --callout-warning-bg: #fff8c5;
-  --callout-warning-border: #f1e7a0;
-  --callout-warning-accent: #9a6700;
-  --callout-caution-bg: #ffebe9;
-  --callout-caution-border: #ffcecb;
-  --callout-caution-accent: #cf222e;
+  --callout-bg: #f1f1ef;
+  --callout-border: #e3e2e0;
+  /* Notion color: default */
+  --callout-default-bg: #f1f1ef;
+  --callout-default-border: #e3e2e0;
+  --callout-default-accent: #9b9a97;
+  /* Notion color: gray */
+  --callout-gray-bg: #f1f1ef;
+  --callout-gray-border: #e3e2e0;
+  --callout-gray-accent: #9b9a97;
+  /* Notion color: brown */
+  --callout-brown-bg: #f4eeee;
+  --callout-brown-border: #ead4c8;
+  --callout-brown-accent: #9f6b53;
+  /* Notion color: orange */
+  --callout-orange-bg: #fbecdd;
+  --callout-orange-border: #f6d3a8;
+  --callout-orange-accent: #d9730d;
+  /* Notion color: yellow */
+  --callout-yellow-bg: #fbf3db;
+  --callout-yellow-border: #f5e49c;
+  --callout-yellow-accent: #cb912f;
+  /* Notion color: green */
+  --callout-green-bg: #eef3ec;
+  --callout-green-border: #bcd5b7;
+  --callout-green-accent: #448361;
+  /* Notion color: blue */
+  --callout-blue-bg: #e7f3f8;
+  --callout-blue-border: #aacfe0;
+  --callout-blue-accent: #337ea9;
+  /* Notion color: purple */
+  --callout-purple-bg: #f4f1fb;
+  --callout-purple-border: #d0c4ec;
+  --callout-purple-accent: #9065b0;
+  /* Notion color: pink */
+  --callout-pink-bg: #faf1f5;
+  --callout-pink-border: #edcce0;
+  --callout-pink-accent: #c14a8a;
+  /* Notion color: red */
+  --callout-red-bg: #fdebec;
+  --callout-red-border: #f5b8b8;
+  --callout-red-accent: #d44c47;
+  /* Notion color: gray_bg */
+  --callout-gray-bg-bg: #f1f1ef;
+  --callout-gray-bg-border: #e3e2e0;
+  --callout-gray-bg-accent: #9b9a97;
+  /* Notion color: brown_bg */
+  --callout-brown-bg-bg: #f4eeee;
+  --callout-brown-bg-border: #e8d5cd;
+  --callout-brown-bg-accent: #9f6b53;
+  /* Notion color: orange_bg */
+  --callout-orange-bg-bg: #fbecdd;
+  --callout-orange-bg-border: #f8d9b5;
+  --callout-orange-bg-accent: #d9730d;
+  /* Notion color: yellow_bg */
+  --callout-yellow-bg-bg: #fbf3db;
+  --callout-yellow-bg-border: #f5e49c;
+  --callout-yellow-bg-accent: #cb912f;
+  /* Notion color: green_bg */
+  --callout-green-bg-bg: #eef3ec;
+  --callout-green-bg-border: #c6e0bf;
+  --callout-green-bg-accent: #448361;
+  /* Notion color: blue_bg */
+  --callout-blue-bg-bg: #e7f3f8;
+  --callout-blue-bg-border: #b7dce9;
+  --callout-blue-bg-accent: #337ea9;
+  /* Notion color: purple_bg */
+  --callout-purple-bg-bg: #f4f1fb;
+  --callout-purple-bg-border: #d9cff1;
+  --callout-purple-bg-accent: #9065b0;
+  /* Notion color: pink_bg */
+  --callout-pink-bg-bg: #faf1f5;
+  --callout-pink-bg-border: #f0d0e4;
+  --callout-pink-bg-accent: #c14a8a;
+  /* Notion color: red_bg */
+  --callout-red-bg-bg: #fdebec;
+  --callout-red-bg-border: #f7c0c0;
+  --callout-red-bg-accent: #d44c47;
   --code-bg: #f6f6f6;
   --code-text: #d44c47;
   --table-header-bg: #f5f5f5;
