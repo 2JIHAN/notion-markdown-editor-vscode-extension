@@ -213,9 +213,9 @@ a:hover { border-bottom-color: currentColor; }
 
 Local image (extension icon, from `media/`):
 
-![Extension icon](media/icon.png)A reference-style image works too:
+![Extension icon](media/icon.png)
 
-![Claude icon](media/claude-icon.svg "Claude theme icon")&gt; \[!NOTE\] 💡
+&gt; \[!NOTE\] 💡
 
 > Image paths render relative to the workspace root, so media/icon.png resolves the same way it does on GitHub.
 
