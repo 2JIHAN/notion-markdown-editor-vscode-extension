@@ -4,3 +4,6 @@ dist-webview/
 *.vsix
 .superpowers/
 .omc/
+
+# local README backup (not tracked, not shipped)
+README.legacy.md
